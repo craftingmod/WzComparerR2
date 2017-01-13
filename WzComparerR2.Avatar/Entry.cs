@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Ookii.Dialogs.Wpf;
+using System.Windows.Forms;
 using System.Drawing;
 using DevComponents.DotNetBar;
 using DevComponents.Editors;
@@ -9,6 +11,7 @@ using WzComparerR2.WzLib;
 using WzComparerR2.Common;
 using WzComparerR2.Avatar.UI;
 using System.Linq;
+using System.IO;
 
 namespace WzComparerR2.Avatar
 {
@@ -31,7 +34,113 @@ namespace WzComparerR2.Avatar
         }
 
         public SuperTabItem Tab { get; private set; }
+        public void exportChara(bool animated,bool all,object sender, EventArgs e, AvatarCanvas avatar, int bodyFrame, int emoFrame)
+        {
+            string defaultDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Pictures\\코디";
+            Directory.CreateDirectory(defaultDir);
 
+            if (!all)
+            {
+                //open save dialog
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.AddExtension = true;
+                sfd.AutoUpgradeEnabled = true;
+                sfd.InitialDirectory = defaultDir;
+                sfd.FileName = avatar.ActionName + ".gif";
+                sfd.Filter = "GIF 파일|*.gif";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    exportChara_one(animated, avatar, bodyFrame, emoFrame, Path.GetFullPath(sfd.FileName));
+                }
+            }else{
+                VistaFolderBrowserDialog fbd = new VistaFolderBrowserDialog();
+                fbd.ShowNewFolderButton = true;
+                fbd.SelectedPath = defaultDir;
+
+                if(fbd.ShowDialog() == true) {
+                    exportChara_all(avatar, emoFrame, fbd.SelectedPath);
+                }
+            }
+        }
+        private void exportChara_all(AvatarCanvas avatar, int emoFrame, string dirPath)
+        {
+            // init default var
+            var faceFrames = avatar.GetFaceFrames(avatar.EmotionName);
+            ActionFrame emoF = faceFrames[(emoFrame <= -1 || emoFrame >= faceFrames.Length) ? 0 : emoFrame];
+
+            foreach (var action in avatar.Actions)
+            {
+                Gif gif = new Gif();
+
+                var actionFrames = avatar.GetActionFrames(action.Name);
+                foreach (var frame in actionFrames)
+                {
+                    // check delay
+                    if (frame.Delay != 0)
+                    {
+                        var bone = avatar.CreateFrame(frame, emoF, null);
+                        var bmp = avatar.DrawFrame(bone, frame);
+
+                        Point pos = bmp.OpOrigin;
+                        pos.Offset(frame.Flip ? new Point(-frame.Move.X, frame.Move.Y) : frame.Move);
+                        GifFrame f = new GifFrame(bmp.Bitmap, new Point(-pos.X, -pos.Y), Math.Abs(frame.Delay));
+                        // add frame
+                        gif.Frames.Add(f);
+                    }
+                }
+
+                var gifFile = gif.EncodeGif(Color.Transparent);
+                gifFile.Save(dirPath + "\\" + action.Name.Replace('\\', '.') + ".gif");
+                gifFile.Dispose();
+            }
+            // show finished
+            MessageBoxEx.Show(dirPath + " 디렉토리에 저장되었습니다.", "알림");
+        }
+        private void exportChara_one(bool animated, AvatarCanvas avatar, int bodyFrame, int emoFrame,string filePath)
+        {
+            // get char frames in action
+            var actionFrames = avatar.GetActionFrames(avatar.ActionName);
+            // get emo frames
+            var faceFrames = avatar.GetFaceFrames(avatar.EmotionName);
+            // check ani disabled and valid
+            animated = (bodyFrame <= -1 || bodyFrame >= actionFrames.Length) || animated;
+            ActionFrame emoF = faceFrames[(emoFrame <= -1 || emoFrame >= faceFrames.Length) ? 0 : emoFrame];
+            // init gif
+            Gif gif = new Gif();
+            if (animated)
+            {
+                // loop
+                foreach (var frame in actionFrames)
+                {
+                    // check delay
+                    if (frame.Delay != 0)
+                    {
+                        var bone = avatar.CreateFrame(frame, emoF, null);
+                        var bmp = avatar.DrawFrame(bone, frame);
+
+                        Point pos = bmp.OpOrigin;
+                        pos.Offset(frame.Flip ? new Point(-frame.Move.X, frame.Move.Y) : frame.Move);
+                        GifFrame f = new GifFrame(bmp.Bitmap, new Point(-pos.X, -pos.Y), Math.Abs(frame.Delay));
+                        // add frame
+                        gif.Frames.Add(f);
+                    }
+                } 
+            }else{
+                var frame = actionFrames[bodyFrame];
+                var bone = avatar.CreateFrame(frame, emoF, null);
+                var bmp = avatar.DrawFrame(bone, frame);
+
+                Point pos = bmp.OpOrigin;
+                pos.Offset(frame.Flip ? new Point(-frame.Move.X, frame.Move.Y) : frame.Move);
+                GifFrame f = new GifFrame(bmp.Bitmap, new Point(-pos.X, -pos.Y), Math.Abs(frame.Delay));
+                // add frame
+                gif.Frames.Add(f);
+            }
+            var gifFile = gif.EncodeGif(Color.Transparent);
+            gifFile.Save(filePath);
+            gifFile.Dispose();
+            MessageBoxEx.Show(filePath + " 에 저장되었습니다.", "알림");
+        }
         public void btnSetting_Click(object sender, EventArgs e)
         {
             AvatarCanvas canvas = new AvatarCanvas();
@@ -74,9 +183,12 @@ namespace WzComparerR2.Avatar
 
             var faceFrames = canvas.GetFaceFrames(canvas.EmotionName);
 
+            string saveDir = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\export";
+            System.IO.Directory.CreateDirectory(saveDir);
+
             foreach (var action in canvas.Actions)
             {
-                break;
+                // break;
                 Gif gif = new Gif();
                 var actionFrames = canvas.GetActionFrames(action.Name);
                 foreach (var frame in actionFrames)
@@ -95,18 +207,18 @@ namespace WzComparerR2.Avatar
                 
 
                 var gifFile = gif.EncodeGif(Color.Black);
-                string fileName = "D:\\ms\\" + action.Name.Replace('\\', '.');
+
+                string fileName = saveDir + "\\" + action.Name.Replace('\\', '.');
                 gifFile.Save(fileName + (gif.Frames.Count == 1 ? ".png" : ".gif"));
                 gifFile.Dispose();
             }
-
+            /*
             {
-
                 Gif gif = CreateKeyDownAction(canvas);
                 var gifFile = gif.EncodeGif(Color.Transparent, 0);
                 string fileName = "D:\\d12";
 
-                if (false)
+                if (true)
                 {
                     var fd = new System.Drawing.Imaging.FrameDimension(gifFile.FrameDimensionsList[0]);
                     //获取帧数(gif图片可能包含多帧，其它格式图片一般仅一帧)
@@ -120,6 +232,7 @@ namespace WzComparerR2.Avatar
                 gifFile.Save(fileName + (gif.Frames.Count == 1 ? ".png" : ".gif"));
                 gifFile.Dispose();
             }
+            */
         }
 
         private Gif CreateContinueAction(AvatarCanvas canvas)

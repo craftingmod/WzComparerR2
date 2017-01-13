@@ -696,6 +696,8 @@ namespace WzComparerR2.Avatar.UI
 
         private void chkTamingPlay_CheckedChanged(object sender, EventArgs e)
         {
+            // can't running
+            /*
             if (chkTamingPlay.Checked)
             {
                 if (!this.timer1.Enabled)
@@ -714,6 +716,7 @@ namespace WzComparerR2.Avatar.UI
                 this.animator.TamingDelay = -1;
                 TimerEnabledCheck();
             }
+            */
         }
 
         private void chkHairCover_CheckedChanged(object sender, EventArgs e)
@@ -1051,10 +1054,38 @@ namespace WzComparerR2.Avatar.UI
                 this.NextFrameDelay = nextFrame;
             }
         }
-
+        // Button 1 Click
         private void buttonItem1_Click_1(object sender, EventArgs e)
         {
-            this.PluginEntry.btnSetting_Click(sender, e);
+            // 복붙
+            ComboItem selectedItem;
+            //Action name
+            selectedItem = this.cmbActionBody.SelectedItem as ComboItem;
+            this.avatar.ActionName = selectedItem != null ? selectedItem.Text : null;
+            //얼굴 표정 이름
+            selectedItem = this.cmbEmotion.SelectedItem as ComboItem;
+            this.avatar.EmotionName = selectedItem != null ? selectedItem.Text : null;
+            //탈것 - 더미
+            this.avatar.TamingActionName = null;
+
+            //프레임 상태들
+            selectedItem = this.cmbBodyFrame.SelectedItem as ComboItem;
+            int bodyFrame = selectedItem != null ? Convert.ToInt32(selectedItem.Text) : -1;
+            selectedItem = this.cmbEmotionFrame.SelectedItem as ComboItem;
+            int emoFrame = selectedItem != null ? Convert.ToInt32(selectedItem.Text) : -1;
+            //selectedItem = this.cmbTamingFrame.SelectedItem as ComboItem;
+
+            //무기 형식?
+            selectedItem = this.cmbWeaponType.SelectedItem as ComboItem;
+            this.avatar.WeaponType = selectedItem != null ? Convert.ToInt32(selectedItem.Text) : 0;
+
+            selectedItem = this.cmbWeaponIdx.SelectedItem as ComboItem;
+            this.avatar.WeaponIndex = selectedItem != null ? Convert.ToInt32(selectedItem.Text) : 0;
+
+
+            // public void exportChara(bool animated,bool all,object sender, EventArgs e, AvatarCanvas avatar, int bodyFrame, int emoFrame)
+            this.PluginEntry.exportChara(chkBodyPlay.Checked, chkTamingPlay.Checked, sender, e, avatar, bodyFrame, emoFrame);
+            //this.PluginEntry.btnSetting_Click(sender, e);
 
         }
     }
