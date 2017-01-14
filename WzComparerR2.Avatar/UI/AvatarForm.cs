@@ -696,8 +696,7 @@ namespace WzComparerR2.Avatar.UI
 
         private void chkTamingPlay_CheckedChanged(object sender, EventArgs e)
         {
-            // can't running
-            /*
+            // can't running but keeping
             if (chkTamingPlay.Checked)
             {
                 if (!this.timer1.Enabled)
@@ -716,7 +715,6 @@ namespace WzComparerR2.Avatar.UI
                 this.animator.TamingDelay = -1;
                 TimerEnabledCheck();
             }
-            */
         }
 
         private void chkHairCover_CheckedChanged(object sender, EventArgs e)
@@ -1082,9 +1080,15 @@ namespace WzComparerR2.Avatar.UI
             selectedItem = this.cmbWeaponIdx.SelectedItem as ComboItem;
             this.avatar.WeaponIndex = selectedItem != null ? Convert.ToInt32(selectedItem.Text) : 0;
 
-
+            // hide save-all feature
+            bool enableSaveAll = false;
+            string runDir = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            if(System.IO.File.Exists(runDir + "debug"))
+            {
+                enableSaveAll = true;
+            }
             // public void exportChara(bool animated,bool all,object sender, EventArgs e, AvatarCanvas avatar, int bodyFrame, int emoFrame)
-            this.PluginEntry.exportChara(chkBodyPlay.Checked, chkTamingPlay.Checked, sender, e, avatar, bodyFrame, emoFrame);
+            this.PluginEntry.exportChara(enableSaveAll && chkBodyPlay.Checked, chkTamingPlay.Checked, sender, e, avatar, bodyFrame, emoFrame);
             //this.PluginEntry.btnSetting_Click(sender, e);
 
         }
