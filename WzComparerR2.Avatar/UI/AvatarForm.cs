@@ -1082,7 +1082,7 @@ namespace WzComparerR2.Avatar.UI
             this.avatar.WeaponIndex = selectedItem != null ? Convert.ToInt32(selectedItem.Text) : 0;
 
             // hide save-all feature
-            bool enableSaveAll = chkBodyPlay.Checked;
+            bool enableSaveAll = chkTamingPlay.Checked;
             string runDir = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             //Debug.WriteLine(runDir + "\\debug");
             if (!System.IO.File.Exists(runDir + "\\saveall"))
