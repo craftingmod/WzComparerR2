@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1081,14 +1082,15 @@ namespace WzComparerR2.Avatar.UI
             this.avatar.WeaponIndex = selectedItem != null ? Convert.ToInt32(selectedItem.Text) : 0;
 
             // hide save-all feature
-            bool enableSaveAll = false;
+            bool enableSaveAll = chkBodyPlay.Checked;
             string runDir = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            if(System.IO.File.Exists(runDir + "debug"))
+            //Debug.WriteLine(runDir + "\\debug");
+            if (!System.IO.File.Exists(runDir + "\\saveall"))
             {
-                enableSaveAll = true;
+                enableSaveAll = false;
             }
             // public void exportChara(bool animated,bool all,object sender, EventArgs e, AvatarCanvas avatar, int bodyFrame, int emoFrame)
-            this.PluginEntry.exportChara(enableSaveAll && chkBodyPlay.Checked, chkTamingPlay.Checked, sender, e, avatar, bodyFrame, emoFrame);
+            this.PluginEntry.exportChara(chkBodyPlay.Checked, enableSaveAll, sender, e, avatar, bodyFrame, emoFrame);
             //this.PluginEntry.btnSetting_Click(sender, e);
 
         }
