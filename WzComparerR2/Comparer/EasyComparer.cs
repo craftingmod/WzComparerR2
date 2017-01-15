@@ -507,11 +507,11 @@ namespace WzComparerR2.Comparer
                         fileStream.Write(mp3, 0, mp3.Length);
                         fileStream.Close();
                     }
-                    return string.Format("<audio controls src=\"{0}\" type=\"audio/mpeg\">음악 {1}ms\n</audio>", Path.Combine(new DirectoryInfo(outputDir).Name, filePath), sound.Ms);
+                    return string.Format("<audio controls src=\"{0}\" type=\"audio/mpeg\">오디오 {1}ms\n</audio>", Path.Combine(new DirectoryInfo(outputDir).Name, filePath), sound.Ms);
                 }
                 else
                 {
-                    return string.Format("음악 {0}ms", sound.Ms);
+                    return string.Format("오디오 {0}ms", sound.Ms);
                 }
             }
             else if (value.Value is Wz_Image)

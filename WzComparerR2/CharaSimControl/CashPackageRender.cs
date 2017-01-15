@@ -137,7 +137,7 @@ namespace WzComparerR2.CharaSimControl
             }
 
             picH = 10;
-            TextRenderer.DrawText(g, CashPackage.name, GearGraphics.ItemNameFont2, new Point(cashBitmap.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
+            TextRenderer.DrawText(g, CashPackage.name, GearGraphics.ItemNameFont2, new Point(cashBitmap.Width, picH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
             picH += 14;
             if (commodityPackage.termStart > 0 || commodityPackage.termEnd > 0)
             {

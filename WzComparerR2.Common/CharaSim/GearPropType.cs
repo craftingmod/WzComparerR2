@@ -78,9 +78,8 @@ namespace WzComparerR2.CharaSim
         incAsrR,
         incEXPr,
         reduceCooltime,
-        //incCriticaldamageMax,
-        //incCriticaldamageMin,
-        incCriticaldamage,
+        incCriticaldamageMax,
+        incCriticaldamageMin,
         @sealed,
         incSTRlv,
         incDEXlv,
@@ -89,7 +88,7 @@ namespace WzComparerR2.CharaSim
         incMaxDamage,
         incPADlv,
         incMADlv,
-        
+        incCriticaldamage,
 
         Option,
         OptionToMob,
@@ -165,5 +164,7 @@ namespace WzComparerR2.CharaSim
         jokerToSetItem,
         medalTag,
         exceptUpgrade,
+        ringOptionSkill,
+        ringOptionSkillLv
     }
 }

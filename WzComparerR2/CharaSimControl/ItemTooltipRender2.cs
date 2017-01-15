@@ -271,17 +271,17 @@ namespace WzComparerR2.CharaSimControl
                 picH = 10;
             }
 
-            bool hasPart2 = false;
+            //绘制标题
             format.Alignment = StringAlignment.Center;
             TextRenderer.DrawText(g, sr.Name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont2, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
             picH += 21;
 
+            //额外特性
             string attr = GetItemAttributeString();
             if (!string.IsNullOrEmpty(attr))
             {
                 TextRenderer.DrawText(g, attr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), ((SolidBrush)GearGraphics.GearNameBrushC).Color, TextFormatFlags.HorizontalCenter);
                 picH += 16;
-                hasPart2 = true;
             }
 
             if (item.TimeLimited)
@@ -290,14 +290,12 @@ namespace WzComparerR2.CharaSimControl
                 string expireStr = time.ToString("yyyy년 M월 d일 HH시 mm분까지 사용가능");
                 TextRenderer.DrawText(g, expireStr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
                 picH += 16;
-                hasPart2 = true;
             }
             if (item.Props.TryGetValue(ItemPropType.limitedLife, out value) && value != 0)
             {
                 string expireStr = string.Format("마법의 시간: {0}시간 {1}분", value / 3600, (value % 3600) / 60);
                 TextRenderer.DrawText(g, expireStr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
                 picH += 16;
-                hasPart2 = true;
             }
             else if (item.Props.TryGetValue(ItemPropType.life, out value) && value != 0)
             {
@@ -305,10 +303,7 @@ namespace WzComparerR2.CharaSimControl
                 string expireStr = time.ToString("마법의 시간: yyyy년 M월 d일 HH시까지");
                 TextRenderer.DrawText(g, expireStr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
                 picH += 16;
-                hasPart2 = true;
             }
-
-            picH += 1;
 
             //绘制图标
             int iconY = picH;
@@ -324,12 +319,6 @@ namespace WzComparerR2.CharaSimControl
                 g.DrawImage(GearGraphics.EnlargeBitmap(Resource.CashItem_0),
                     20 + 68 - 26,
                     picH + 6 + 68 - 26);
-            }
-            if (item.TimeLimited)
-            {
-                g.DrawImage(GearGraphics.EnlargeBitmap(Resource.Item_timeLimit_0),
-                    20 + 2,
-                    picH + 6 + 2);
             }
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_new, 14 + 7, picH + 7);
             g.DrawImage(Resource.UIToolTip_img_Item_ItemIcon_cover, 18, picH + 4); //绘制左上角cover
@@ -348,9 +337,19 @@ namespace WzComparerR2.CharaSimControl
 
             int right = tooltip.Width - 18;
 
-            if (!string.IsNullOrEmpty(sr.Desc))
+            string desc = null;
+            if (item.Level > 0)
             {
-                GearGraphics.DrawString(g, sr.Desc + sr.AutoDesc, GearGraphics.ItemDetailFont2, 100, right, ref picH, 16);
+                desc += $"[LV.{item.Level}] ";
+            }
+            desc += sr.Desc;
+            if (!string.IsNullOrEmpty(desc))
+            {
+                GearGraphics.DrawString(g, desc, GearGraphics.ItemDetailFont2, 100, right, ref picH, 16);
+            }
+            if (!string.IsNullOrEmpty(sr.AutoDesc))
+            {
+                GearGraphics.DrawString(g, sr.AutoDesc, GearGraphics.ItemDetailFont2, 100, right, ref picH, 16);
             }
             if (item.Props.TryGetValue(ItemPropType.tradeAvailable, out value) && value > 0)
             {
@@ -439,7 +438,7 @@ namespace WzComparerR2.CharaSimControl
                 picH = Math.Max(picH, iconY + 107);
                 g.DrawLine(Pens.White, 6, picH, 283, picH);//分割线
                 picH += 10;
-                TextRenderer.DrawText(g, "< 사용 제한조건 >", GearGraphics.ItemDetailFont, new Point(8, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color);
+                TextRenderer.DrawText(g, "< 사용 제한조건 >", GearGraphics.ItemDetailFont, new Point(8, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color, TextFormatFlags.NoPadding);
                 picH += 17;
 
                 //技能标题
@@ -453,7 +452,7 @@ namespace WzComparerR2.CharaSimControl
                     case "장비제작": sr.Name = "장비 제작"; break;
                     case "장신구제작": sr.Name = "장신구 제작"; break;
                 }
-                TextRenderer.DrawText(g, string.Format("· {0} {1}레벨 이상", sr.Name, reqSkillLevel), GearGraphics.ItemDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color);
+                TextRenderer.DrawText(g, string.Format("· {0} {1}레벨 이상", sr.Name, reqSkillLevel), GearGraphics.ItemDetailFont, new Point(13, picH), ((SolidBrush)GearGraphics.SetItemNameBrush).Color, TextFormatFlags.NoPadding);
                 picH += 16;
                 picH += 6;
             }
@@ -632,7 +631,7 @@ namespace WzComparerR2.CharaSimControl
             if (!string.IsNullOrEmpty(nickName))
             {
                 var brush = new SolidBrush(color);
-                TextRenderer.DrawText(g, nickName, font, new Point(picW / 2 - width / 2, picH), color);
+                TextRenderer.DrawText(g, nickName, font, new Point(picW / 2 - width / 2, picH), color, TextFormatFlags.NoPadding);
                 brush.Dispose();
             }
 

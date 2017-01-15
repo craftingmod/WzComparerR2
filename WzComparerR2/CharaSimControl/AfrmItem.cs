@@ -526,6 +526,10 @@ namespace WzComparerR2.CharaSimControl
             {
                 g.DrawImage(Resource.Item_timeLimit_0, origin.X, origin.Y - 32);
             }
+            if (item.ItemID / 1000 == 3017)
+            {
+                g.DrawImage(Resource.Item_monsterCollection_0, origin.X, origin.Y - 32);
+            }
         }
 
         private Point getItemIconOrigin(int index)

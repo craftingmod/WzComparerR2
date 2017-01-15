@@ -872,7 +872,7 @@ namespace WzComparerR2
 
             if ((png = value as Wz_Png) != null)
             {
-                return "png " + png.Width + "*" + png.Height + " (" + png.Form + ")";
+                return "PNG " + png.Width + "*" + png.Height + " (" + png.Form + ")";
             }
             else if ((vector = value as Wz_Vector) != null)
             {
@@ -884,7 +884,7 @@ namespace WzComparerR2
             }
             else if ((sound = value as Wz_Sound) != null)
             {
-                return "sound " + sound.Ms + "ms";
+                return "오디오 " + sound.Ms + "ms";
             }
             else if ((img = value as Wz_Image) != null)
             {
@@ -1870,7 +1870,7 @@ namespace WzComparerR2
                 {
                     supportExt.Add(ext);
                 }
-                supportExt.Add("Any File|*.*");
+                supportExt.Add("모든 파일 (*.*)|*.*");
 
                 dlg.Title = "오디오 파일 열기";
                 dlg.Filter = string.Join("|", supportExt.ToArray());
@@ -2040,10 +2040,10 @@ namespace WzComparerR2
                     switch (wzSound.SoundType)
                     {
                         case Wz_SoundType.Mp3: dlg.FileName += ".mp3"; break;
-                        case Wz_SoundType.WavRaw: dlg.FileName += ".pcm"; break;
+                        case Wz_SoundType.WavRaw: dlg.FileName += ".wav"; break;
                     }
                 }
-                dlg.Filter = "*.*|*.*";
+                dlg.Filter = "모든 파일 (*.*)|*.*";
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     try
