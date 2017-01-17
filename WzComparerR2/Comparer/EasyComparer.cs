@@ -78,16 +78,60 @@ namespace WzComparerR2.Comparer
 
                 CreateStyleSheet(outputDir);
 
-                foreach (var wzType in wzTypeList)
+                string htmlFilePath = Path.Combine(outputDir, "index.html");
+
+                FileStream htmlFile = null;
+                StreamWriter sw = null;
+                StateInfo = "Index 문서 작성중...";
+                StateDetail = "문서 구조 생성중";
+                try
                 {
-                    var vNodeNew = dictNew[wzType];
-                    var vNodeOld = dictOld[wzType];
-                    var cmp = comparer.Compare(vNodeNew, vNodeOld);
-                    OutputFile(vNodeNew.LinkNodes.Select(node => node.Value).OfType<Wz_File>().ToList(),
-                        vNodeOld.LinkNodes.Select(node => node.Value).OfType<Wz_File>().ToList(),
-                        wzType,
-                        cmp.ToList(),
-                        outputDir);
+                    htmlFile = new FileStream(htmlFilePath, FileMode.Create, FileAccess.Write);
+                    sw = new StreamWriter(htmlFile, Encoding.UTF8);
+                    sw.WriteLine("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+                    sw.WriteLine("<html>");
+                    sw.WriteLine("<head>");
+                    sw.WriteLine("<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">");
+                    sw.WriteLine("<title>Index {0}←{1}</title>", fileNew.Header.WzVersion, fileOld.Header.WzVersion);
+                    sw.WriteLine("<link type=\"text/css\" rel=\"stylesheet\" href=\"style.css\" />");
+                    sw.WriteLine("</head>");
+                    sw.WriteLine("<body>");
+                    //输出概况
+                    sw.WriteLine("<p class=\"wzf\">");
+                    sw.WriteLine("<table>");
+                    sw.WriteLine("<tr><th>파일명</th><th>신버전 용량</th><th>구버전 용량</th><th>변경</th><th>추가</th><th>제거</th></tr>");
+                    foreach (var wzType in wzTypeList)
+                    {
+                        var vNodeNew = dictNew[wzType];
+                        var vNodeOld = dictOld[wzType];
+                        var cmp = comparer.Compare(vNodeNew, vNodeOld);
+                        OutputFile(vNodeNew.LinkNodes.Select(node => node.Value).OfType<Wz_File>().ToList(),
+                            vNodeOld.LinkNodes.Select(node => node.Value).OfType<Wz_File>().ToList(),
+                            wzType,
+                            cmp.ToList(),
+                            outputDir,
+                            sw);
+                    }
+                    sw.WriteLine("</table>");
+                    sw.WriteLine("</p>");
+
+                    //html结束
+                    sw.WriteLine("</body>");
+                    sw.WriteLine("</html>");
+                }
+                finally
+                {
+                    try
+                    {
+                        if (sw != null)
+                        {
+                            sw.Flush();
+                            sw.Close();
+                        }
+                    }
+                    catch
+                    {
+                    }
                 }
             }
             else //执行传统对比
@@ -166,7 +210,7 @@ namespace WzComparerR2.Comparer
                 diffLst,
                 outputDir);
         }
-        private void OutputFile(List<Wz_File> fileNew, List<Wz_File> fileOld, Wz_Type type, List<CompareDifference> diffLst, string outputDir)
+        private void OutputFile(List<Wz_File> fileNew, List<Wz_File> fileOld, Wz_Type type, List<CompareDifference> diffLst, string outputDir, StreamWriter index = null)
         {
             string htmlFilePath = Path.Combine(outputDir, type.ToString() + ".html");
             string srcDirPath = Path.Combine(outputDir, type.ToString() + "_files");
@@ -175,7 +219,7 @@ namespace WzComparerR2.Comparer
 
             FileStream htmlFile = null;
             StreamWriter sw = null;
-            StateInfo = "문서 작성중..." + type;
+            StateInfo = type + " 문서 작성중...";
             StateDetail = "문서 구조 생성중";
             try
             {
@@ -256,7 +300,7 @@ namespace WzComparerR2.Comparer
                 for (int i = 0; i < sb.Length; i++)
                 {
                     sw.WriteLine("<table class=\"lst{0}\">", i);
-                    sw.WriteLine("<tr><th>{0}:{1}</th></tr>", diffStr[i], count[i]);
+                    sw.WriteLine("<tr><th><a name=\"m_{0}\">{1}:{2}</a></th></tr>", i, diffStr[i], count[i]);
                     sw.Write(sb[i].ToString());
                     sw.WriteLine("</table>");
                     sw.WriteLine("<br />");
@@ -321,6 +365,18 @@ namespace WzComparerR2.Comparer
                 //html结束
                 sw.WriteLine("</body>");
                 sw.WriteLine("</html>");
+
+                if (index != null)
+                {
+                    index.WriteLine("<tr><td><a href=\"{0}.html\">{0}.wz</a></td><td>{1}</td><td>{2}</td><td><a href=\"{0}.html#m_0\">{3}</a></td><td><a href=\"{0}.html#m_1\">{4}</a></td><td><a href=\"{0}.html#m_2\">{5}</a></td></tr>",
+                        type.ToString(),
+                        string.Join("<br/>", fileNew.Select(wzf => wzf.Header.FileSize.ToString("N0")).ToArray()),
+                        string.Join("<br/>", fileOld.Select(wzf => wzf.Header.FileSize.ToString("N0")).ToArray()),
+                        count[3],
+                        count[4],
+                        count[5]
+                        );
+                }
             }
             finally
             {
@@ -481,7 +537,7 @@ namespace WzComparerR2.Comparer
             }
             else if ((uol = value.Value as Wz_Uol) != null)
             {
-                return uol.Uol;
+                return "(uol) " + uol.Uol;
             }
             else if ((vector = value.Value as Wz_Vector) != null)
             {

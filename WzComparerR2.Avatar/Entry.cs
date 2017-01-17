@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-// using Ookii.Dialogs.Wpf;
+using Ookii.Dialogs.Wpf;
 using System.Windows.Forms;
 using System.Drawing;
 using DevComponents.DotNetBar;
@@ -54,7 +54,6 @@ namespace WzComparerR2.Avatar
                 }
             }else{
                 // Code Type A
-                /*
                 VistaFolderBrowserDialog fbd = new VistaFolderBrowserDialog();
                 fbd.ShowNewFolderButton = true;
                 fbd.SelectedPath = defaultDir;
@@ -62,15 +61,16 @@ namespace WzComparerR2.Avatar
                 if(fbd.ShowDialog() == true) {
                     exportChara_all(avatar, emoFrame, fbd.SelectedPath);
                 }
-                */
 
                 // Code Type B
+                /*
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
                 fbd.ShowNewFolderButton = true;
                 if(fbd.ShowDialog() == DialogResult.OK)
                 {
                     exportChara_all(avatar, emoFrame, fbd.SelectedPath);
                 }
+                */
             }
         }
         private void exportChara_all(AvatarCanvas avatar, int emoFrame, string dirPath)

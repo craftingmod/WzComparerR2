@@ -208,6 +208,10 @@
       <Name>WzComparerR2.WzLib</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\superuser\Documents\WzComparerP\CharaSimResource-master\CharaSimResource.csproj">
+      <Project>{54797f38-a12c-4202-92a4-1a3ddce914b7}</Project>
+      <Name>CharaSimResource</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Rendering\Effect\PngEffect.fx" />

@@ -1087,7 +1087,7 @@ namespace WzComparerR2.Avatar.UI
             //Debug.WriteLine(runDir + "\\debug");
             if (!System.IO.File.Exists(runDir + "\\saveall"))
             {
-                enableSaveAll = false;
+                //enableSaveAll = false;
             }
             // public void exportChara(bool animated,bool all,object sender, EventArgs e, AvatarCanvas avatar, int bodyFrame, int emoFrame)
             this.PluginEntry.exportChara(chkBodyPlay.Checked, enableSaveAll, sender, e, avatar, bodyFrame, emoFrame);
