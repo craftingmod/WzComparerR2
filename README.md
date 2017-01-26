@@ -1,7 +1,7 @@
 # WzComparerR2
 - 메이플스토리의 wz 툴이며 .NET Framework 4.6.1이 필요합니다.
 - 자세한 내용은 [KENNYSOFT님의 Project](https://github.com/KENNYSOFT/WzComparerR2)를 보아주세요.
-- 이 fork는 변경사항 없이 unofficial build만 합니다.
+- 이 fork는 변경사항 없는 비공식 빌드입니다.
 
 # 사용법
 - 출처는 인소야 포스팅입니다.

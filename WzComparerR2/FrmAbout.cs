@@ -49,6 +49,7 @@ namespace WzComparerR2
             this.advTree1.Nodes.Add(new Node(string.Format("KMS <font color=\"#808080\">v1.5.2</font>")));
             this.advTree1.Nodes.Add(new Node(string.Format("[KMS] 각종 기능 추가, 최종 번역 <font color=\"#808080\">박현민</font>")));
             this.advTree1.Nodes.Add(new Node(string.Format("[KMS] 문자열 번역 <font color=\"#808080\">슈린냥</font>")));
+            this.advTree1.Nodes.Add(new Node(string.Format("[KMS] 비공식 빌드")));
 
             if (PluginBase.PluginManager.LoadedPlugins.Count > 0)
             {
