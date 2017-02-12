@@ -1,4 +1,4 @@
-# WzComparerR2
+# WzComparerR2 - 0213
 - 메이플스토리의 wz 툴이며 .NET Framework 4.6.1이 필요합니다.
 - 자세한 내용은 [KENNYSOFT님의 Project](https://github.com/KENNYSOFT/WzComparerR2)를 보아주세요.
 - 이 fork는 변경사항 없는 비공식 빌드입니다.
@@ -7,6 +7,7 @@
 - 출처는 인소야 포스팅입니다.
 - [상단바 사용법](http://www.insoya.com/bbs/zboard.php?id=maple_info&no=34999)
 - [나머지 사용법](http://www.insoya.com/bbs/zboard.php?id=maple_info&no=35001)
+- [캐릭터 사용법](http://www.insoya.com/bbs/zboard.php?id=maple_info&no=36314)
 - [맵 미리보기 단축키](http://www.insoya.com/bbs/zboard.php?id=maple_info&no=35036)
 
 # Credits
@@ -27,7 +28,7 @@
 - **WzComparerR2.LuaConsole**
 - **WzComparerR2.MapRender** 지형
 - **WzComparerR2.Avatar** 캐릭터
-- *<s>**WzComparerR2.MonsterCard** KMS엔 없습니다</s>*
+- *<s>**WzComparerR2.MonsterCard** KMS엔 그-없</s>*
 
 # Usage
 - **now**: Win10+/.net4.6.1+/x64
