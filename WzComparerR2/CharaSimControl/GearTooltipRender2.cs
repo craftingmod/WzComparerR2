@@ -211,7 +211,7 @@ namespace WzComparerR2.CharaSimControl
                 string attrStr = null;
                 foreach (string attr in attrList)
                 {
-                    if (TextRenderer.MeasureText(g, attrStr + ", " + attr, GearGraphics.EquipDetailFont).Width > 254)
+                    if (TextRenderer.MeasureText(g, attrStr + ", " + attr, GearGraphics.EquipDetailFont).Width > 261 - 7)
                     {
                         TextRenderer.DrawText(g, attrStr, GearGraphics.EquipDetailFont, new Point(261, picH), ((SolidBrush)GearGraphics.OrangeBrush2).Color, TextFormatFlags.HorizontalCenter);
                         picH += 15;
@@ -1470,7 +1470,7 @@ namespace WzComparerR2.CharaSimControl
             //测试宽度
             var font = GearGraphics.ItemDetailFont;
             var fmt = StringFormat.GenericTypographic;
-            int width = string.IsNullOrEmpty(medalName) ? 0 : TextRenderer.MeasureText(g, medalName, font).Width;
+            int width = string.IsNullOrEmpty(medalName) ? 0 : TextRenderer.MeasureText(g, medalName, font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
             int left = 130 - width / 2;
             int right = left + width;
 

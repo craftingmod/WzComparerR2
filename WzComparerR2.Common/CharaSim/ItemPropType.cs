@@ -31,5 +31,7 @@ namespace WzComparerR2.CharaSim
         limitedLife,
         flatRate,
         noMoveToLocker,
+        exp_minLev,
+        exp_maxLev,
     }
 }

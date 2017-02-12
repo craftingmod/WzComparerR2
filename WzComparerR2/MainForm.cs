@@ -544,7 +544,7 @@ namespace WzComparerR2
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
                 dlg.Title = "Wz 파일 열기";
-                dlg.Filter = "base.wz|*.wz";
+                dlg.Filter = "Base.wz|*.wz";
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     openWz(dlg.FileName);
@@ -2727,7 +2727,7 @@ namespace WzComparerR2
 
                         while (true)
                         {
-                            string txt = string.Format("Wz 파일 :\r\n\r\n  신버전 : {0} (V{1})\r\n  구버전 : {2} (V:{3})\r\n\r\nYes를 누르시면 비교가 시작되고, No를 누르시면 신버전과 구버전을 뒤집을 수 있습니다.",
+                            string txt = string.Format("Wz 파일 :\r\n\r\n  신버전 : {0} (V{1})\r\n  구버전 : {2} (V{3})\r\n\r\nYes를 누르시면 비교가 시작되고, No를 누르시면 신버전과 구버전을 뒤집을 수 있습니다.",
                                 fileNew.Header.FileName,
                                 fileNew.Header.WzVersion,
                                 fileOld.Header.FileName,

@@ -276,12 +276,14 @@ namespace WzComparerR2.CharaSimControl
             TextRenderer.DrawText(g, sr.Name.Replace(Environment.NewLine, ""), GearGraphics.ItemNameFont2, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
             picH += 21;
 
+            bool hasInfo = false;
             //额外特性
             string attr = GetItemAttributeString();
             if (!string.IsNullOrEmpty(attr))
             {
                 TextRenderer.DrawText(g, attr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), ((SolidBrush)GearGraphics.GearNameBrushC).Color, TextFormatFlags.HorizontalCenter);
                 picH += 16;
+                hasInfo = true;
             }
 
             if (item.TimeLimited)
@@ -290,12 +292,21 @@ namespace WzComparerR2.CharaSimControl
                 string expireStr = time.ToString("yyyy년 M월 d일 HH시 mm분까지 사용가능");
                 TextRenderer.DrawText(g, expireStr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
                 picH += 16;
+                hasInfo = true;
+            }
+            else if (item.EndUseDate != null)
+            {
+                string expireStr = string.Format("{0}년 {1}월 {2}일 {3:D2}시 {4:D2}분까지 사용가능", Convert.ToInt32(item.EndUseDate.Substring(0, 4)), Convert.ToInt32(item.EndUseDate.Substring(4, 2)), Convert.ToInt32(item.EndUseDate.Substring(6, 2)), Convert.ToInt32(item.EndUseDate.Substring(8, 2)), Convert.ToInt32(item.EndUseDate.Substring(10, 2)));
+                TextRenderer.DrawText(g, expireStr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
+                picH += 16;
+                hasInfo = true;
             }
             if (item.Props.TryGetValue(ItemPropType.limitedLife, out value) && value != 0)
             {
                 string expireStr = string.Format("마법의 시간: {0}시간 {1}분", value / 3600, (value % 3600) / 60);
                 TextRenderer.DrawText(g, expireStr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
                 picH += 16;
+                hasInfo = true;
             }
             else if (item.Props.TryGetValue(ItemPropType.life, out value) && value != 0)
             {
@@ -303,6 +314,12 @@ namespace WzComparerR2.CharaSimControl
                 string expireStr = time.ToString("마법의 시간: yyyy년 M월 d일 HH시까지");
                 TextRenderer.DrawText(g, expireStr, GearGraphics.ItemDetailFont, new Point(tooltip.Width, picH), Color.White, TextFormatFlags.HorizontalCenter);
                 picH += 16;
+                hasInfo = true;
+            }
+
+            if (hasInfo)
+            {
+                picH += 4;
             }
 
             //绘制图标
@@ -416,7 +433,9 @@ namespace WzComparerR2.CharaSimControl
             bool willDrawNickTag = this.ShowNickTag
                 && this.Item.Props.TryGetValue(ItemPropType.nickTag, out value)
                 && this.TryGetNickResource(value, out nickResNode);
-            if (item.Sample.Bitmap != null || willDrawNickTag)
+            int minLev = 0, maxLev = 0;
+            bool willDrawExp = item.Props.TryGetValue(ItemPropType.exp_minLev, out minLev) && item.Props.TryGetValue(ItemPropType.exp_maxLev, out maxLev);
+            if (item.Sample.Bitmap != null || willDrawNickTag || willDrawExp)
             {
                 if (picH < iconY + 84)
                 {
@@ -427,6 +446,48 @@ namespace WzComparerR2.CharaSimControl
                     g.DrawImage(item.Sample.Bitmap, (tooltip.Width - item.Sample.Bitmap.Width) / 2, picH);
                     picH += item.Sample.Bitmap.Height;
                     picH += 2;
+                }
+                if (minLev > 0 && maxLev > 0)
+                {
+                    long[] expTable = {0, 15, 34, 57, 92, 135, 372, 450, 840, 1242,
+                        1242, 1242, 1242, 1242, 1242, 1490, 1788, 2145, 2574, 3088,
+                        3705, 4446, 5335, 6402, 7682, 9218, 11061, 13273, 15927, 19112,
+                        19112, 19112, 19112, 19112, 19112, 22934, 27520, 33024, 39628, 47553,
+                        51357, 55465, 59902, 64694, 69869, 75458, 81494, 88013, 95054, 102658,
+                        110870, 119739, 129318, 139663, 150836, 162902, 175934, 190008, 205208, 221624,
+                        221624, 221624, 221624, 221624, 221624, 238245, 256113, 275321, 295970, 318167,
+                        342029, 367681, 395257, 424901, 456768, 488741, 522952, 559558, 598727, 640637,
+                        685481, 733464, 784806, 839742, 898523, 961419, 1028718, 1100728, 1177778, 1260222,
+                        1342136, 1429374, 1522283, 1621231, 1726611, 1838840, 1958364, 2085657, 2221224, 2365603,
+                        2365603, 2365603, 2365603, 2365603, 2365603, 2519367, 2683125, 2857528, 3043267, 3241079,
+                        3451749, 3676112, 3915059, 4169537, 4440556, 4729192, 5036589, 5363967, 5712624, 6083944,
+                        6479400, 6900561, 7349097, 7826788, 8335529, 8877338, 9454364, 10068897, 10723375, 11420394,
+                        12162719, 12953295, 13795259, 14691950, 15646926, 16663976, 17747134, 18900697, 20129242, 21437642,
+                        22777494, 24201087, 25713654, 27320757, 29028304, 30842573, 32770233, 34818372, 36994520, 39306677,
+                        41763344, 44373553, 47146900, 50093581, 53224429, 56550955, 60085389, 63840725, 67830770, 72070193,
+                        76574580, 81360491, 86445521, 91848366, 97588888, 103688193, 110168705, 117054249, 124370139, 132143272,
+                        140402226, 149177365, 158500950, 168407259, 178932712, 190116006, 201998256, 214623147, 228037093, 242289411,
+                        256826775, 272236381, 288570563, 305884796, 324237883, 343692155, 364313684, 386172505, 409342855, 433903426,
+                        459937631, 487533888, 516785921, 547793076, 580660660, 615500299, 652430316, 691576134, 733070702, 777054944,
+                        2207026470, 2648431764, 3178118116, 3813741739, 4576490086, 5491788103, 6590145723, 7908174867, 9489809840, 11387771808,
+                        24142076232, 25590600805, 27126036853, 28753599064, 30478815007, 32307543907, 34245996541, 36300756333, 38478801712, 40787529814,
+                        84838062013, 88231584493, 91760847872, 95431281786, 99248533057, 103218474379, 107347213354, 111641101888, 116106745963, 120751015801,
+                        246332072234, 251258713678, 256283887951, 261409565710, 266637757024, 271970512164, 277409922407, 282958120855, 288617283272, 294389628937,
+                        594667050452, 600613720956, 606619858165, 612686056746, 618812917313, 625001046486, 631251056950, 637563567519, 643939203194, 650378595225};
+
+                    long totalExp = 0;
+
+                    for (int i = minLev; i < maxLev; i++)
+                        totalExp += expTable[i];
+
+                    g.DrawLine(Pens.White, 6, picH, tooltip.Width - 7, picH);
+                    picH += 8;
+
+                    TextRenderer.DrawText(g, "총  경험치량 :" + totalExp, GearGraphics.ItemDetailFont2, new Point(10, picH), ((SolidBrush)GearGraphics.GearNameBrushC).Color, TextFormatFlags.NoPadding);
+                    picH += 16;
+
+                    TextRenderer.DrawText(g, "잔여 경험치량:" + totalExp, GearGraphics.ItemDetailFont2, new Point(10, picH), Color.Red, TextFormatFlags.NoPadding);
+                    picH += 16;
                 }
                 if (nickResNode != null)
                 {
@@ -478,7 +539,7 @@ namespace WzComparerR2.CharaSimControl
 
         private string GetItemAttributeString()
         {
-            int value;
+            int value, value2;
             List<string> tags = new List<string>();
 
             if (item.Props.TryGetValue(ItemPropType.quest, out value) && value != 0)
@@ -499,6 +560,10 @@ namespace WzComparerR2.CharaSimControl
             }
             if (item.Props.TryGetValue(ItemPropType.accountSharable, out value) && value != 0)
             {
+                if (item.Props.TryGetValue(ItemPropType.exp_minLev, out value2) && value2 != 0)
+                {
+                    tags.Add("사용시 교환 불가");
+                }
                 tags.Add(ItemStringHelper.GetItemPropString(ItemPropType.accountSharable, value));
             }
             if (item.Props.TryGetValue(ItemPropType.multiPet, out value))
@@ -619,7 +684,7 @@ namespace WzComparerR2.CharaSimControl
             //测试宽度
             var font = GearGraphics.ItemDetailFont;
             var fmt = StringFormat.GenericTypographic;
-            int width = string.IsNullOrEmpty(nickName) ? 0 : TextRenderer.MeasureText(g, nickName, font).Width;
+            int width = string.IsNullOrEmpty(nickName) ? 0 : TextRenderer.MeasureText(g, nickName, font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
             int left = picW / 2 - width / 2;
             int right = left + width;
 
